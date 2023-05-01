@@ -1,5 +1,8 @@
+numpy==1.24.1
 Pillow==9.4.0
+PyAudio==0.2.13
 pyserial==3.5
 pystray==0.19.4
-pywin32==305
-six==1.16.0
+
+keyboard~=0.13.5
+pynput~=1.7.6
