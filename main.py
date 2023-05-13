@@ -45,14 +45,15 @@ def quit_program(icon):
     # Set the icon to not visible to stop the listen_for_input thread
     icon.visible = False
 
+    keyboard_handler.listener.stop()
+    ser.close()
+
     # Close all threads
     for thread in threading.enumerate():
         if thread != threading.main_thread():
             thread.join()
 
     # Close all reminding resources
-    keyboard_handler.listener.stop()
-    ser.close()
     icon.stop()
 
 
@@ -86,6 +87,8 @@ def main():
     # Create the pystray menu
     menu = pystray.Menu(pystray.MenuItem("Enable PS5 Mode", com_handler.enable_ps5_mode),
                         pystray.MenuItem("Disable PS5 Mode", com_handler.disable_ps5_mode),
+                        pystray.MenuItem("Change audio to headset", com_handler.change_audio_to_headset),
+                        pystray.MenuItem("Change audio to speakers", com_handler.change_audio_to_speaker),
                         pystray.MenuItem("Quit", quit_program))
 
     # Create the pystray icon and start the event loop
@@ -97,6 +100,8 @@ def main():
     # Start the listen_for_input thread
     listen_com_thread = threading.Thread(target=com_handler.listen_for_com_input, args=(icon,))
     listen_com_thread.start()
+
+    print("Booted successfully")
 
 
 

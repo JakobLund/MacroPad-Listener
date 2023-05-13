@@ -13,7 +13,7 @@ from serial import Serial
 import log_handler
 
 open_windows_filename = 'open_windows.save'
-
+CREATE_NO_WINDOW = 0x08000000
 
 class MONITORINFO(ctypes.Structure):
     _fields_ = [
@@ -177,12 +177,12 @@ class ComHandler:
         log_handler.write_to_log(f"Enable PS5 mode")
         print("Enable PS5 mode")
         save_open_windows()
-        subprocess.run([r"disable_primary.bat"])
+        subprocess.run([r"disable_primary.bat"], creationflags=CREATE_NO_WINDOW)
 
     def disable_ps5_mode(self):
         log_handler.write_to_log(f"Disable PS5 mode")
         print("Disable PS5 mode")
-        subprocess.run([r"enable_primary.bat"])
+        subprocess.run([r"enable_primary.bat"], creationflags=CREATE_NO_WINDOW)
         restore_open_windows()
 
     def change_audio_to_headset(self):
@@ -204,9 +204,9 @@ class ComHandler:
     def get_audio_devices(self) -> dict:
         audio_devices = {}
         result = subprocess.run([r"EndPointController.exe", r"-f", "\"%d %s\""], stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
+                                stderr=subprocess.PIPE, creationflags=CREATE_NO_WINDOW)
         outputs = [device.strip() for device in result.stdout.decode("utf-8").split("\n") if device != ""]
-        print(result)
+
         for device in outputs:
             index = device.find("(")
             audio_devices[device[1]] = device[index:]
@@ -216,11 +216,10 @@ class ComHandler:
     def set_audio_device(self, audio_devices, audio_device_to_set):
 
         for key, value in audio_devices.items():
-            print(f"{key}:{value}")
             if audio_device_to_set in value:
                 print(value)
                 result = subprocess.run([r"EndPointController.exe", key], stdout=subprocess.PIPE,
-                                        stderr=subprocess.PIPE)
+                                        stderr=subprocess.PIPE, creationflags=CREATE_NO_WINDOW)
     def audio_datalist_set_volume(self, datalist, volume):
         """ Change value of list of audio chunks """
         sound_level = (volume / 100.)
