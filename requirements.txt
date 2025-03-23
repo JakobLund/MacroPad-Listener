@@ -3,6 +3,7 @@ Pillow==9.4.0
 PyAudio==0.2.13
 pyserial==3.5
 pystray==0.19.4
-
-keyboard~=0.13.5
 pynput~=1.7.6
+PyAutoGUI~=0.9.53
+PyGetWindow~=0.0.9
+screeninfo~=0.8.1

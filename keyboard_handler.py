@@ -6,8 +6,9 @@ from vk_codes_enum import VKCodes
 
 
 class KeyboardHandler:
-    def __init__(self, threshold: float):
-        self.threshold = threshold
+    def __init__(self, media_key_threshold: float, windows_key_threshold: float):
+        self.media_key_threshold = media_key_threshold
+        self.windows_key_threshold = windows_key_threshold
         self.last_ts = None
         self.datetime = datetime.now()
         self.timestamp = self.datetime.timestamp()
@@ -24,7 +25,21 @@ class KeyboardHandler:
         self.datetime = datetime.now()
         self.timestamp = self.datetime.timestamp()
 
-        if self.last_ts is not None and self.timestamp - self.last_ts < self.threshold:
+        if self.last_ts is not None and self.timestamp - self.last_ts < self.media_key_threshold:
+            self.keyboard.press(Key.media_next)
+            self.timestamp = datetime.now().timestamp()
+            self.last_ts = None
+
+        self.last_ts = self.datetime.timestamp()
+
+        # self.keyboard.press(Key.media_play_pause)
+        return
+
+    def handle_windows_key(self):
+        self.datetime = datetime.now()
+        self.timestamp = self.datetime.timestamp()
+
+        if self.last_ts is not None and self.timestamp - self.last_ts < self.media_key_threshold:
             self.keyboard.press(Key.media_next)
             self.timestamp = datetime.now().timestamp()
             self.last_ts = None
@@ -65,6 +80,11 @@ class KeyboardHandler:
         if key is Key.media_play_pause:
             self.handle_media_key()
 
+        # windows key
+        if key is Key.cmd:
+            #self.handle_windows_key()
+            pass
+
         #if key is Key.media_volume_down:
         #    with self.keyboard.pressed(Key.ctrl):
         #        self.keyboard.press(Key.tab)
@@ -76,3 +96,5 @@ class KeyboardHandler:
 
     def on_release(self, key):
         pass
+
+
